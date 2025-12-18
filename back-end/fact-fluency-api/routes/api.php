@@ -23,4 +23,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/sessions/{session}/answer', [SessionController::class, 'submitAnswer']);
     Route::post('/sessions/{session}/complete', [SessionController::class, 'complete']);
     Route::get('/student/sessions', [SessionController::class, 'index']);
+
+    // Get student's frequently missed problems
+    Route::get('/student/missed-problems', [SessionController::class, 'getMissedProblems']);
+    Route::post('/sessions/start-missed', [SessionController::class, 'startMissedProblemsSession']);
 });

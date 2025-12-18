@@ -8,13 +8,25 @@ export default {
     return response.data
   },
 
-  async startSession(operationType, difficultyLevel, timeLimit, problemsCount) {
+  async startSession(operationTypes, difficultyLevel, timeLimit, problemsCount) {
     const response = await api.post('/sessions/start', {
-      operation_type: operationType,
+      operation_types: operationTypes, // Now accepts array
       difficulty_level: difficultyLevel,
       time_limit: timeLimit,
       problems_count: problemsCount
     })
+    return response.data
+  },
+
+  async startMissedProblemsSession(problemsCount) {
+    const response = await api.post('/sessions/start-missed', {
+      problems_count: problemsCount
+    })
+    return response.data
+  },
+
+  async getMissedProblems() {
+    const response = await api.get('/student/missed-problems')
     return response.data
   },
 

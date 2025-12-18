@@ -70,4 +70,8 @@ function logout() {
   authStore.logout()
   router.push('/login')
 }
+
+function goToPracticeMissed() {
+  router.push({ name: 'Practice', query: { mode: 'missed' } })
+}
 </script>
