@@ -14,25 +14,37 @@
             Logout
           </button>
         </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+  <!-- Regular Practice -->
+  <div class="bg-gradient-to-br from-forest-50 to-sage-50 rounded-2xl p-6 border-2 border-forest-200">
+    <div class="text-center">
+      <div class="text-4xl mb-3">📚</div>
+      <h3 class="text-xl font-bold text-earth-800 mb-2">New Practice</h3>
+      <p class="text-earth-600 text-sm mb-4">Start a fresh practice session</p>
+      <button 
+        @click="goToPractice"
+        class="bg-forest-500 hover:bg-forest-600 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg w-full"
+      >
+        Start Practice
+      </button>
+    </div>
+  </div>
 
-        <div class="bg-gradient-to-br from-forest-50 to-sage-50 rounded-2xl p-8 border-2 border-forest-200 mb-6">
-          <div class="text-center">
-            <div class="inline-flex items-center justify-center w-20 h-20 bg-forest-100 rounded-full mb-4">
-              <svg class="w-10 h-10 text-forest-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
-              </svg>
-            </div>
-            <h2 class="text-2xl font-bold text-earth-800 mb-2">Ready to Practice?</h2>
-            <p class="text-earth-600 mb-6">Sharpen your math skills with focused practice sessions</p>
-            <button 
-              @click="goToPractice"
-              class="bg-forest-500 hover:bg-forest-600 active:bg-forest-700 text-white px-10 py-4 rounded-xl text-xl font-bold transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 active:translate-y-0"
-            >
-              🚀 Start Practice
-            </button>
-          </div>
-        </div>
-
+  <!-- Missed Problems Practice -->
+  <div class="bg-gradient-to-br from-sky-50 to-sage-50 rounded-2xl p-6 border-2 border-sky-200">
+    <div class="text-center">
+      <div class="text-4xl mb-3">🎯</div>
+      <h3 class="text-xl font-bold text-earth-800 mb-2">Missed Problems</h3>
+      <p class="text-earth-600 text-sm mb-4">Practice problems you got wrong</p>
+      <button 
+        @click="goToPracticeMissed"
+        class="bg-sky-500 hover:bg-sky-600 text-white px-6 py-3 rounded-xl font-semibold transition-all shadow-lg w-full"
+      >
+        Practice Missed
+      </button>
+    </div>
+  </div>
+</div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div class="bg-sky-50 border-2 border-sky-200 rounded-xl p-6 text-center">
             <p class="text-sky-600 text-sm font-bold mb-2">TOTAL SESSIONS</p>

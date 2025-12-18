@@ -52,61 +52,30 @@
           </div>
           
           <div class="space-y-6">
-            <!-- Operation -->
-            <div>
-              <label class="block text-sm font-bold text-earth-700 mb-3">OPERATION TYPE</label>
-              <div class="grid grid-cols-2 gap-3">
-                <button 
-                  @click="settings.operation = 'addition'"
-                  :class="[
-                    'p-4 rounded-xl border-2 font-semibold transition-all',
-                    settings.operation === 'addition' 
-                      ? 'bg-forest-100 border-forest-500 text-forest-700' 
-                      : 'bg-sage-50 border-sage-200 text-earth-600 hover:border-sage-300'
-                  ]"
-                >
-                  <div class="text-2xl mb-1">➕</div>
-                  Addition
-                </button>
-                <button 
-                  @click="settings.operation = 'subtraction'"
-                  :class="[
-                    'p-4 rounded-xl border-2 font-semibold transition-all',
-                    settings.operation === 'subtraction' 
-                      ? 'bg-forest-100 border-forest-500 text-forest-700' 
-                      : 'bg-sage-50 border-sage-200 text-earth-600 hover:border-sage-300'
-                  ]"
-                >
-                  <div class="text-2xl mb-1">➖</div>
-                  Subtraction
-                </button>
-                <button 
-                  @click="settings.operation = 'multiplication'"
-                  :class="[
-                    'p-4 rounded-xl border-2 font-semibold transition-all',
-                    settings.operation === 'multiplication' 
-                      ? 'bg-forest-100 border-forest-500 text-forest-700' 
-                      : 'bg-sage-50 border-sage-200 text-earth-600 hover:border-sage-300'
-                  ]"
-                >
-                  <div class="text-2xl mb-1">✖️</div>
-                  Multiplication
-                </button>
-                <button 
-                  @click="settings.operation = 'division'"
-                  :class="[
-                    'p-4 rounded-xl border-2 font-semibold transition-all',
-                    settings.operation === 'division' 
-                      ? 'bg-forest-100 border-forest-500 text-forest-700' 
-                      : 'bg-sage-50 border-sage-200 text-earth-600 hover:border-sage-300'
-                  ]"
-                >
-                  <div class="text-2xl mb-1">➗</div>
-                  Division
-                </button>
-              </div>
-            </div>
-
+ <!-- Operation Selection with Multi-Select -->
+<div>
+  <label class="block text-sm font-bold text-earth-700 mb-3">OPERATION TYPES (Select one or more)</label>
+  <div class="grid grid-cols-2 gap-3">
+    <button 
+      v-for="op in operationOptions"
+      :key="op.value"
+      @click="toggleOperation(op.value)"
+      type="button"
+      :class="[
+        'p-4 rounded-xl border-2 font-semibold transition-all',
+        settings.operations.includes(op.value)
+          ? 'bg-forest-100 border-forest-500 text-forest-700' 
+          : 'bg-sage-50 border-sage-200 text-earth-600 hover:border-sage-300'
+      ]"
+    >
+      <div class="text-2xl mb-1">{{ op.icon }}</div>
+      {{ op.label }}
+    </button>
+  </div>
+  <p v-if="settings.operations.length === 0" class="text-red-600 text-sm mt-2">
+    Please select at least one operation type
+  </p>
+</div>
             <!-- Difficulty -->
             <div>
               <label class="block text-sm font-bold text-earth-700 mb-3">
@@ -258,9 +227,15 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
+const operationOptions = [
+  { value: 'addition', label: 'Addition', icon: '➕' },
+  { value: 'subtraction', label: 'Subtraction', icon: '➖' },
+  { value: 'multiplication', label: 'Multiplication', icon: '✖️' },
+  { value: 'division', label: 'Division', icon: '➗' }
+]
 
 const settings = ref({
-  operation: 'addition',
+  operations: ['addition'], // Changed to array
   difficulty: 1,
   problemsCount: 10
 })
@@ -280,11 +255,28 @@ const startTime = ref(null)
 
 const currentProblem = computed(() => problems.value[currentProblemIndex.value])
 
+function toggleOperation(operation) {
+  const index = settings.value.operations.indexOf(operation)
+  if (index > -1) {
+    // Remove if already selected
+    if (settings.value.operations.length > 1) { // Keep at least one
+      settings.value.operations.splice(index, 1)
+    }
+  } else {
+    // Add if not selected
+    settings.value.operations.push(operation)
+  }
+}
 async function startPractice() {
+  if (settings.value.operations.length === 0) {
+    alert('Please select at least one operation type')
+    return
+  }
+  
   loading.value = true
   try {
     const response = await drillService.startSession(
-      settings.value.operation,
+      settings.value.operations, // Now sending array
       settings.value.difficulty,
       60,
       settings.value.problemsCount
