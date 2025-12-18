@@ -174,4 +174,27 @@ public function startMissedProblemsSession(Request $request)
         'started_at' => $session->started_at,
     ], 201);
 }
+
+public function getStudentStats(Request $request)
+{
+    $studentId = $request->user()->id;
+    
+    $completedSessions = DrillSession::where('student_id', $studentId)
+        ->whereNotNull('completed_at')
+        ->get();
+    
+    $totalSessions = $completedSessions->count();
+    $totalProblems = $completedSessions->sum('total_problems');
+    $totalCorrect = $completedSessions->sum('correct_answers');
+    $averageAccuracy = $totalProblems > 0 
+        ? round(($totalCorrect / $totalProblems) * 100) 
+        : 0;
+    
+    return response()->json([
+        'total_sessions' => $totalSessions,
+        'total_problems' => $totalProblems,
+        'total_correct' => $totalCorrect,
+        'average_accuracy' => $averageAccuracy,
+    ]);
+}
 }

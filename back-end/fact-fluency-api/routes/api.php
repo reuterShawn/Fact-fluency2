@@ -27,4 +27,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Get student's frequently missed problems
     Route::get('/student/missed-problems', [SessionController::class, 'getMissedProblems']);
     Route::post('/sessions/start-missed', [SessionController::class, 'startMissedProblemsSession']);
+    Route::get('/student/stats', [SessionController::class, 'getStudentStats']);
 });

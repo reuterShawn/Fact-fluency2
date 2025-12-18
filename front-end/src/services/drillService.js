@@ -47,5 +47,10 @@ export default {
   async getStudentSessions() {
     const response = await api.get('/student/sessions')
     return response.data
-  }
+  },
+
+  async getStudentStats() {
+  const response = await api.get('/student/stats')
+  return response.data
+}
 }

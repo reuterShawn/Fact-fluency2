@@ -41,6 +41,12 @@
       <!-- Setup Screen -->
       <div v-if="!sessionActive && !sessionComplete" class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
         <div class="max-w-xl mx-auto">
+          <h2 class="text-3xl font-bold text-earth-800 mb-2">
+  {{ isMissedMode ? 'Practice Missed Problems' : 'Setup Practice' }}
+</h2>
+<p class="text-earth-600">
+  {{ isMissedMode ? 'Focus on problems you got wrong before' : 'Choose your settings and let\'s begin!' }}
+</p>
           <div class="text-center mb-10">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-sky-100 rounded-full mb-4">
               <svg class="w-10 h-10 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -218,15 +224,17 @@
 </template>
 
 <script setup>
-import { ref, computed, nextTick } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, computed, nextTick, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import drillService from '../services/drillService'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 
 const user = computed(() => authStore.user)
+
 const operationOptions = [
   { value: 'addition', label: 'Addition', icon: '➕' },
   { value: 'subtraction', label: 'Subtraction', icon: '➖' },
@@ -235,7 +243,7 @@ const operationOptions = [
 ]
 
 const settings = ref({
-  operations: ['addition'], // Changed to array
+  operations: ['addition'],
   difficulty: 1,
   problemsCount: 10
 })
@@ -275,12 +283,19 @@ async function startPractice() {
   
   loading.value = true
   try {
-    const response = await drillService.startSession(
-      settings.value.operations, // Now sending array
-      settings.value.difficulty,
-      60,
-      settings.value.problemsCount
-    )
+    let response
+    
+    // Check if we're in "missed problems" mode
+    if (route.query.mode === 'missed') {
+      response = await drillService.startMissedProblemsSession(settings.value.problemsCount)
+    } else {
+      response = await drillService.startSession(
+        settings.value.operations,
+        settings.value.difficulty,
+        60,
+        settings.value.problemsCount
+      )
+    }
     
     sessionId.value = response.session_id
     problems.value = response.problems
@@ -293,12 +308,16 @@ async function startPractice() {
     answerInput.value?.focus()
   } catch (error) {
     console.error('Failed to start session:', error)
-    alert('Failed to start practice. Please try again.')
+    if (error.response?.status === 404) {
+      alert('No missed problems found! Complete some practice sessions first.')
+      router.push('/dashboard')
+    } else {
+      alert('Failed to start practice. Please try again.')
+    }
   } finally {
     loading.value = false
   }
 }
-
 async function submitAnswer() {
   if (userAnswer.value === null || userAnswer.value === '') return
 
@@ -368,4 +387,6 @@ function logout() {
   authStore.logout()
   router.push('/login')
 }
+
+const isMissedMode = computed(() => route.query.mode === 'missed')
 </script>
