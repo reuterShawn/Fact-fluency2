@@ -42,10 +42,8 @@
       <div v-if="!sessionActive && !sessionComplete" class="bg-white rounded-3xl shadow-2xl p-8 md:p-12">
         <div class="max-w-xl mx-auto">
           <h2 class="text-3xl font-bold text-earth-800 mb-2">
-  {{ isMissedMode ? 'Practice Missed Problems' : 'Setup Practice' }}
 </h2>
 <p class="text-earth-600">
-  {{ isMissedMode ? 'Focus on problems you got wrong before' : 'Choose your settings and let\'s begin!' }}
 </p>
           <div class="text-center mb-10">
             <div class="inline-flex items-center justify-center w-20 h-20 bg-sky-100 rounded-full mb-4">
