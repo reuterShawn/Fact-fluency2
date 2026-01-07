@@ -230,6 +230,11 @@ import drillService from '../services/drillService'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const startTime = ref(null)
+
+const timeLimit = ref(60) // seconds
+const timeRemaining = ref(60) // countdown
+const timerInterval = ref(null) // store interval ID
 
 const user = computed(() => authStore.user)
 
@@ -273,6 +278,33 @@ function toggleOperation(operation) {
     settings.value.operations.push(operation)
   }
 }
+
+function startTimer() {
+  timeRemaining.value = timeLimit.value
+  
+  timerInterval.value = setInterval(() => {
+    timeRemaining.value--
+    
+    // Check if time is up
+    if (timeRemaining.value <= 0) {
+      stopTimer()
+      handleTimeUp()
+    }
+  }, 1000) // Run every 1 second
+}
+
+function stopTimer() {
+  if (timerInterval.value) {
+    clearInterval(timerInterval.value)
+    timerInterval.value = null
+  }
+}
+
+function handleTimeUp() {
+  alert('Time is up! Great effort!')
+  completeSession()
+}
+
 async function startPractice() {
   if (settings.value.operations.length === 0) {
     alert('Please select at least one operation type')
@@ -301,6 +333,8 @@ async function startPractice() {
     currentProblemIndex.value = 0
     correctCount.value = 0
     startTime.value = Date.now()
+
+    startTimer()
     
     await nextTick()
     answerInput.value?.focus()
