@@ -230,7 +230,7 @@ import drillService from '../services/drillService'
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
-const startTime = ref(null)
+
 
 const timeLimit = ref(60) // seconds
 const timeRemaining = ref(60) // countdown
