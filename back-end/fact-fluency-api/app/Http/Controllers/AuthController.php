@@ -10,50 +10,50 @@ use Illuminate\Validation\ValidationException;
 
 class AuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role' => 'required|in:student,teacher',
-        ]);
-
-        $user = User::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => Hash::make($validated['password']),
-            'role' => $validated['role'],
-        ]);
-
-        return response()->json([
-            'message' => 'User registered successfully',
-            'user' => $user
-        ], 201);
-    }
-
     public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+{
+    $request->validate([
+        'username' => 'required|string',
+        'password' => 'required|string',
+    ]);
 
-        $user = User::where('email', $request->email)->first();
+    $user = User::where('username', $request->username)->first();
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The provided credentials are incorrect.'],
-            ]);
-        }
-
-        $token = $user->createToken('auth-token')->plainTextToken;
-
-        return response()->json([
-            'user' => $user,
-            'token' => $token
-        ]);
+    if (!$user || !Hash::check($request->password, $user->password)) {
+        return response()->json(['message' => 'Invalid username or password'], 401);
     }
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'user' => $user,
+        'token' => $token
+    ]);
+}
+
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string',
+        'username' => 'required|string|unique:users',
+        'password' => 'required|string|min:6',
+        'role' => 'required|in:student,teacher'
+    ]);
+
+    $user = User::create([
+        'name' => $request->name,
+        'username' => $request->username,
+        'password' => Hash::make($request->password),
+        'role' => $request->role,
+    ]);
+
+    $token = $user->createToken('auth_token')->plainTextToken;
+
+    return response()->json([
+        'user' => $user,
+        'token' => $token
+    ], 201);
+}
 
     public function user(Request $request)
     {

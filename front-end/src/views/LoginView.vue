@@ -13,17 +13,17 @@
       </div>
 
       <form @submit.prevent="handleLogin" class="space-y-5">
-        <!-- Email Input -->
-        <div>
-          <label class="block text-sm font-semibold text-earth-700 mb-2">Email Address</label>
-          <input 
-            v-model="email"
-            type="email" 
-            required
-            class="w-full px-4 py-3 bg-sage-50 border-2 border-sage-200 rounded-xl focus:border-forest-500 focus:ring-4 focus:ring-forest-100 focus:bg-white transition-all outline-none text-earth-800"
-            placeholder="student@school.com"
-          />
-        </div>
+   <!-- Username Input -->
+<div>
+  <label class="block text-sm font-semibold text-earth-700 mb-2">Username</label>
+  <input 
+    v-model="username"
+    type="text" 
+    required
+    class="w-full px-4 py-3 bg-sage-50 border-2 border-sage-200 rounded-xl focus:border-forest-500 focus:ring-4 focus:ring-forest-100 focus:bg-white transition-all outline-none text-earth-800"
+    placeholder="Enter your username"
+  />
+</div>
 
         <!-- Password Input -->
         <div>
@@ -85,7 +85,7 @@ import { useAuthStore } from '../stores/auth'
 const router = useRouter()
 const authStore = useAuthStore()
 
-const email = ref('')
+const username = ref('')
 const password = ref('')
 const error = ref('')
 const loading = ref(false)
@@ -94,8 +94,7 @@ async function handleLogin() {
   loading.value = true
   error.value = ''
 
-  const result = await authStore.login(email.value, password.value)
-  
+const result = await authStore.login(username.value, password.value)  
   if (result.success) {
     router.push('/dashboard')
   } else {

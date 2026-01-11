@@ -10,11 +10,11 @@ export const useAuthStore = defineStore('auth', () => {
   const isStudent = computed(() => user.value?.role === 'student')
   const isTeacher = computed(() => user.value?.role === 'teacher')
 
-  async function register(name, email, password, role) {
+  async function register(name, username, password, role) {
     try {
       const response = await api.post('/register', {
         name,
-        email,
+        username,
         password,
         role
       })
@@ -27,17 +27,22 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function login(email, password) {
+  async function login(username, password) {
     try {
-      const response = await api.post('/login', { email, password })
+      const response = await api.post('/login', {
+        username,
+        password
+      })
+      
       token.value = response.data.token
       user.value = response.data.user
       localStorage.setItem('auth_token', response.data.token)
+      
       return { success: true }
     } catch (error) {
-      return { 
-        success: false, 
-        error: error.response?.data?.message || 'Login failed' 
+      return {
+        success: false,
+        error: error.response?.data?.message || 'Invalid username or password'
       }
     }
   }

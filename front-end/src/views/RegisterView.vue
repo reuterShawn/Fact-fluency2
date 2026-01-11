@@ -24,13 +24,13 @@
         </div>
 
         <div>
-          <label class="block text-sm font-medium text-earth-700 mb-1">Email</label>
+          <label class="block text-sm font-medium text-earth-700 mb-1">Username</label>
           <input 
-            v-model="email"
-            type="email" 
+            v-model="username"
+            type="text" 
             required
             class="w-full px-4 py-3 border-2 border-sage-200 rounded-lg focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all"
-            placeholder="you@example.com"
+            placeholder="johndoe123"
           />
         </div>
 
@@ -93,7 +93,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const name = ref('')
-const email = ref('')
+const username = ref('')
 const password = ref('')
 const role = ref('student')
 const error = ref('')
@@ -107,7 +107,7 @@ async function handleRegister() {
 
   const result = await authStore.register(
     name.value, 
-    email.value, 
+    username.value, 
     password.value, 
     role.value
   )
