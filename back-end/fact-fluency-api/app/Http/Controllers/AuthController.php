@@ -30,7 +30,6 @@ class AuthController extends Controller
         'token' => $token
     ]);
 }
-
 public function register(Request $request)
 {
     $request->validate([
@@ -42,7 +41,7 @@ public function register(Request $request)
 
     $user = User::create([
         'name' => $request->name,
-        'username' => $request->username,
+        'username' => $request->username,  // Make sure this line is here
         'password' => Hash::make($request->password),
         'role' => $request->role,
     ]);
