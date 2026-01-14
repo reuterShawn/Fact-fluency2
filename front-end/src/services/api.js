@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const api = axios.create({
-  baseURL: 'https://fact-fluency.com/api',
+  baseURL: 'http://fact-fluency.com/api',
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
